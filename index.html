@@ -19,9 +19,9 @@ h1{font-size:34px;margin:8px 0 12px;color:#c94773} h2{font-size:27px;color:#c947
 .progress{height:6px;background:#f8dce6;border-radius:10px;margin:5px 0 18px;overflow:hidden} .bar{height:100%;width:6.6%;background:#df5f88;transition:.4s}
 .heroimg{width:100%;max-height:470px;object-fit:cover;border-radius:24px;box-shadow:0 15px 35px rgba(80,30,50,.18);margin:12px 0}
 .reasons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px} .reason{background:#fff4f7;border-radius:20px;padding:14px;border:1px solid #f8d5e0}
-.flowerbox,.hearts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0} .flower,.heartbtn{width:72px;height:72px;border:0;border-radius:50%;background:#fff0f5;font-size:34px;cursor:pointer;box-shadow:0 7px 18px #e9bfd0}
+.flowerbox,.hearts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0} .flower,.heartbtn{width:72px;height:72px;border:0;border-radius:50%;background:#fff0f5;font-size:34px;cursor:pointer;box-shadow:0 7px 18px #e9bfd0;transition:transform .35s,box-shadow .35s} .flower.opened{transform:scale(1.18) rotate(8deg);box-shadow:0 12px 28px rgba(216,79,123,.28);background:#fff8fb} .flower.pulse{animation:bloom .55s ease}
 .hiddenmsg{display:none;background:#fff8fb;border-radius:20px;padding:14px;margin-top:12px} .hiddenmsg.show{display:block}
-.gift{font-size:95px;cursor:pointer;animation:bob 1.7s infinite} @keyframes bob{50%{transform:translateY(-9px) rotate(3deg)}}
+.gift{font-size:95px;cursor:pointer;animation:bob 1.7s infinite} @keyframes bob{50%{transform:translateY(-9px) rotate(3deg)}} @keyframes bloom{0%{transform:scale(.85) rotate(-8deg)}60%{transform:scale(1.25) rotate(10deg)}100%{transform:scale(1.18) rotate(8deg)}}
 .choice{padding:16px;border-radius:22px;background:#fff6d9;margin:10px;cursor:pointer;border:2px solid transparent} .choice:hover{border-color:#efb95c}
 .small{font-size:13px;color:#9b6b7d} .final{font-size:20px;font-weight:700;color:#b83f68}
 .nav{margin-top:20px}
@@ -126,7 +126,18 @@ function update(){pages.forEach((p,n)=>p.classList.toggle('active',n===i));docum
 function next(){if(i<pages.length-1){i++;update()}}
 function prev(){if(i>0){i--;update()}}
 function restart(){i=0;update()}
-function reveal(el,text){let target=el.parentElement.querySelector('.hiddenmsg')||document.getElementById('msg')||document.getElementById('flowerMsg')||document.getElementById('choiceMsg')||document.getElementById('secretMsg')||document.getElementById('endMsg'); if(el.parentElement.querySelector('.hiddenmsg')) target=el.parentElement.querySelector('.hiddenmsg'); target.innerHTML=text;target.classList.add('show')}
+function reveal(el,text){
+  let target=el.parentElement.querySelector('.hiddenmsg');
+  if(!target) target=document.getElementById('msg')||document.getElementById('flowerMsg')||document.getElementById('choiceMsg')||document.getElementById('secretMsg')||document.getElementById('endMsg');
+  if(target){target.innerHTML=text;target.classList.add('show');}
+  if(el.classList && el.classList.contains('flower')){
+    el.classList.add('opened');
+    el.classList.remove('pulse');
+    void el.offsetWidth;
+    el.classList.add('pulse');
+    el.textContent=['🌹','🌷','🌸','🌺'][Math.floor(Math.random()*4)];
+  }
+}
 function openGift(){document.getElementById('giftMsg').classList.add('show');document.querySelector('.gift').textContent='💝'}
 for(let n=0;n<24;n++){let h=document.createElement('div');h.className='heart';h.textContent=['♡','♥','✿','🦋'][n%4];h.style.left=(Math.random()*100)+'%';h.style.animationDelay=(Math.random()*8)+'s';h.style.fontSize=(15+Math.random()*25)+'px';document.getElementById('bg').appendChild(h)}
 update();
